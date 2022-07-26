@@ -1,5 +1,6 @@
 package W5;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.Random;
 import javax.swing.*;
 
@@ -12,7 +13,7 @@ public class Particulas {
 	private Point size;
 	private Color color;
 	
-	private Rectangle.Float rect;
+	public Rectangle.Float rect;
 	private Graphics g;
 	
 	private Main main;
@@ -38,7 +39,7 @@ public class Particulas {
 	
 	public void Desenha()
 	{
-		g.clearRect(0, 0, main.getSize().height, main.getSize().width);
+		
 		this.rect.x = this.x;
 		this.rect.y = this.y;
 		this.rect.width *= size.x;
@@ -59,24 +60,72 @@ public class Particulas {
 		this.y += 10f * deltaTime * this.dir.y;
 		
 	}
-	
-	
-	public boolean Collision(Rectangle rect,Rectangle[] rect2 )
+	public void Limpa()
 	{
-		for(int i = 0; i< rect2.length; i++)
+		g.clearRect(0, 0, main.getSize().height, main.getSize().width);
+	}
+	
+	public boolean Collision(Rectangle2D rect,Rectangle2D rect2 )
+	{
+		
+		if(rect != rect2)
 		{
-			if(rect != rect2[i])
+			if(rect.intersects(rect2))
 			{
-				if(rect.intersects(rect2[i]))
-				{
-					return true;
-				}else 
-				{
-					return false;
-				}
+				return true;
+			}else 
+			{
+				return false;
 			}
 		}
+		
 		return false;
 	}
-
+	
+	public void CollisionBorder()
+	{
+		
+		if(this.x >= main.getSize().width - 50 || this.x <= 50)
+		{
+			DistanciaX();
+			this.dir.x *= -1;
+		}
+		if(this.y >= main.getSize().height - 50 || this.y <= 50)
+		{
+			DistanciaY();
+			this.dir.y *= -1;
+		}
+		
+		
+	}
+	
+	public void InvertDirection(Point dir)
+	{
+		this.dir.x *= -1;
+		this.dir.y *= -1;
+	}
+	
+	public void DistanciaX()
+	{
+		if(this.dir.x == 1)
+		{
+			this.x -= 2;
+		}
+		else 
+		{
+			this.x += 2;
+		}
+	}
+	public void DistanciaY()
+	{
+		if(this.dir.y == 1)
+		{
+			this.y -= 2;
+		}
+		else 
+		{
+			this.y += 2;
+		}
+	}
+	
 }

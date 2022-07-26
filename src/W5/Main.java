@@ -9,16 +9,27 @@ public class Main extends JFrame{
 	
 	private static final long serialVersionUID = 1L;
 	
+	float contador = 0;
 	
-	
-	static final int MAX = 10;
+	static final int MAX = 50;
 	float x = 0;
 	float y = 0;
 	Random random = new Random();
 	private int[] dir = {-1,1};
 	Color color[] = {Color.blue,Color.black,Color.red};
-	
+	Graphics g2;
 	Particulas[] particulas = new Particulas[MAX];
+	
+	public class Arvore{
+		
+		
+		Arvore noroeste;//1
+		Arvore nordeste;//2
+		Arvore sudoeste;//3
+		Arvore sudeste;//4
+		
+		
+	}
 	
 	
 	public Main()
@@ -31,14 +42,15 @@ public class Main extends JFrame{
 		setVisible(true);
 		
 		
-		
+		g2 = super.getGraphics();
 		
 		particulas = new Particulas[MAX];
 		for(int i = 0; i < MAX; i++ )
 		{
 			Color c = color[random.nextInt(0,3)];
 			int d = dir[random.nextInt(0,2)];
-			particulas[i] = new Particulas(super.getGraphics(),new Rectangle.Float(250,250,10,10),c,this,new Point(1,1),new Point(d,d));
+			int d2 = dir[random.nextInt(0,2)];
+			particulas[i] = new Particulas(g2,new Rectangle.Float(random.nextFloat(60f,getSize().width - 60f),random.nextFloat(60f,getSize().height -60f),10,10),c,this,new Point(1,1),new Point(d,d2));
 		}
 		
 		
@@ -63,30 +75,18 @@ public class Main extends JFrame{
 	
 	public void Render() {
 		
+		if(contador > 1f)
+		{
+			particulas[0].Limpa();
+			contador = 0;
+		}
 		
 		for(int i = 0; i < MAX; i++ )
 		{
-			particulas[i].Desenha();
+			//particulas[i].Desenha();
 		}
 		
-		/*
-		g2.clearRect(0, 0, getSize().height, getSize().width);
-		//g3.clearRect(0, 0, getSize().height, getSize().width);
 		
-		g2.fillRect((int)rect.x,(int)rect.y,(int)rect.height,(int)rect.width);
-		g2.setColor(Color.red);
-		g3.fillRect((int)rect2.x,(int)rect2.y,(int)rect2.height,(int)rect2.width);
-		
-		rect.x = position;
-		rect2.y = position;
-		
-		if(rect.intersects(rect2))
-		{
-			g2.setColor(Color.blue);
-		}
-		System.out.println(position);
-		
-		*/
 	}
 	
 	public void Update(float deltaTime) {
@@ -94,8 +94,30 @@ public class Main extends JFrame{
 		for(int i = 0; i < MAX; i++ )
 		{
 			particulas[i].Update(deltaTime);
+			particulas[i].CollisionBorder();
 		}
 		
+		for(int i = 0; i < MAX; i++ )
+		{
+			for(int j = 0; j < MAX; j++ )
+			{
+				if(particulas[i].Collision(particulas[i].rect, particulas[j].rect) == true)
+				{
+					
+					particulas[i].DistanciaX();
+					particulas[i].DistanciaY();
+					
+					particulas[j].DistanciaX();
+					particulas[j].DistanciaY();
+					
+					particulas[i].InvertDirection(particulas[i].dir);
+					particulas[j].InvertDirection(particulas[j].dir);
+					break;
+				}
+				
+			}
+		}
+		contador += 10f * deltaTime;
 		
 	}
 
