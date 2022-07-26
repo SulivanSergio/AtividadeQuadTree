@@ -31,7 +31,7 @@ public class Particulas {
 		this.x = rect.x;
 		this.y = rect.y;
 		
-		g.drawImage(null, (int)rect.x,(int)rect.y, (int)rect.height, (int)rect.width,null);
+		
 		Desenha();
 		
 		
